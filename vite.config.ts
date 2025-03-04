@@ -2,6 +2,7 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import { defineConfig } from 'vite'
+import fs from 'fs'
 
 // https://vite.dev/config/
 export default defineConfig(({command, isPreview}) => {
@@ -32,9 +33,10 @@ export default defineConfig(({command, isPreview}) => {
       port:7000,
       host: true,
       allowedHosts: true,
-      // https: {
-      //   // cert: fs.
-      // },
+      https: {
+        key: fs.readFileSync('D:/Programming/PCC-Workspace/server.key'), // 개인 키 경로
+        cert: fs.readFileSync('D:/Programming/PCC-Workspace/server.cert'), // 인증서 경로
+      },
     },
     preview: {
       port: 7000,
