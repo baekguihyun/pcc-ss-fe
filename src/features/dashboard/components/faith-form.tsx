@@ -77,15 +77,15 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
   }
   
   useEffect(() => {
-    console.log(date)
 
     getList(date)
     .then((response) => {
-      console.log('API 응답:', response.data);
-
       const result: FaithCheck[] = response.data.result
       
       setFaithCheckList(result)
+      
+      form.setValue("items", faithCheckList.filter(check => check.fthChckRslt > 0).map(check => check.fthActvCd))
+      
     })
     // @ts-ignore
     .catch((error) => {
@@ -99,15 +99,15 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <div className='grid gap-6'>
           <FormField
-                control={form.control}
-                name='date'
-                render={({ field }) => 
-                  <DatePickerFormItem field={field} 
-                    label="날짜"
-                    startYear={getYear(currentDate)} 
-                    endYear={getYear(currentDate)}
-                    endDate={currentDate}/>}
-                  />
+            control={form.control}
+            name='date'
+            render={({ field }) => 
+              <DatePickerFormItem field={field} 
+                label="날짜"
+                startYear={getYear(currentDate)} 
+                endYear={getYear(currentDate)}
+                endDate={currentDate}/>}
+              />
           <FormField 
             control={form.control}
             name='items'
