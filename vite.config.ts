@@ -4,13 +4,21 @@ import path from 'path'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig(({command}) => {
-  // command: "serve" (개발 모드) 또는 "build" (빌드 모드)
-  const isBuild = command === "build";
+export default defineConfig(({command, isPreview}) => {
+  let base = '/';
+
+  if (command === 'build' || isPreview) {  
+    base = 'pcc-ss-fe'
+
+    console.log('Build base:', base);
+  }
+  else if (command === 'serve') {
+    console.log('Dev base:', base);
+  }
 
   return {
     plugins: [react(), TanStackRouterVite()],
-    base: isBuild ? "/pcc-ss-fe/" : "/", // 빌드 시에만 "/my-app/" 적용
+    base: base,
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -26,7 +34,12 @@ export default defineConfig(({command}) => {
       allowedHosts: true,
       // https: {
       //   // cert: fs.
-      // }
+      // },
+    },
+    preview: {
+      port: 7000,
+      host: true,
+      allowedHosts: true
     }
   }
 })

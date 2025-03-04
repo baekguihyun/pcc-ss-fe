@@ -82,6 +82,7 @@ const router = createRouter({
   context: { queryClient },
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
+  basepath: import.meta.env.VITE_BASE_PATH || '/'
 })
 
 // Register the router instance for type safety
