@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/stores/authStore'
-import { redirect, useLocation, useRouter } from '@tanstack/react-router'
+import { redirect, useRouter } from '@tanstack/react-router'
 
 const useAuthRouter = () => {
   const router = useRouter()

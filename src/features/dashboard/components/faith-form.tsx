@@ -48,6 +48,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
     }
 
     putList(currentDate, faithCheckList)
+    // @ts-ignore
     .then((response) => {
       toast({
         title: '안내',
@@ -56,8 +57,9 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
         duration: 1000
       })
     })
+    // @ts-ignore
     .catch((error) => {
-      errorToast(error)
+      errorToast()
     })
 
   }
@@ -85,8 +87,9 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
       
       setFaithCheckList(result)
     })
+    // @ts-ignore
     .catch((error) => {
-      errorToast(error)
+      errorToast()
     })
 
   }, [date])

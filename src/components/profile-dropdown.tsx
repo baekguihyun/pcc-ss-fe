@@ -1,18 +1,15 @@
-import { Link } from '@tanstack/react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useAuthStore } from '@/stores/authStore'
 import useAuthRouter from '@/hooks/use-auth-router'
+import { useAuthStore } from '@/stores/authStore'
 import { User2 } from 'lucide-react'
 
 export function ProfileDropdown() {

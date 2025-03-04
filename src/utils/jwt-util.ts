@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { getCookie, setCookie } from "./cookie-util";
-import { toast } from "@/hooks/use-toast";
 
 const COOKIE_TOKEN = import.meta.env.VITE_COOKIE_TOKEN
 const jwtAxios = axios.create()

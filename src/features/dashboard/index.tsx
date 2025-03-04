@@ -3,16 +3,14 @@ import { Main } from '@/components/layout/main'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from '@/components/ui/card'
 // import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 // import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { FaithForm } from './components/faith-form'
-import { RecentSales } from './components/recent-sales'
 
 export default function Dashboard() {
   // const [date, setDate] = useState(null)

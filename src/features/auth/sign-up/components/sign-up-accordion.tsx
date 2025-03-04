@@ -4,11 +4,11 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion"
-import { SignUpForm } from "./sign-up-form"
-import { useSignUp } from "../context/signup-context"
-import { useCallback, useEffect } from "react"
 import { toast } from "@/hooks/use-toast"
+import { useCallback } from "react"
+import { useSignUp } from "../context/signup-context"
 import { IdentifyForm } from "./identify-form"
+import { SignUpForm } from "./sign-up-form"
 
 
 

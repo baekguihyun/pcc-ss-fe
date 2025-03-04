@@ -1,16 +1,16 @@
-import { HTMLAttributes, useContext, useEffect, useState } from 'react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UserCheck, UserCheck2, UserRoundSearch } from 'lucide-react';
 import { postCheckDpcnUsername, putSignUp } from '@/api/authApi';
-import { cn } from '@/lib/utils';
-import useAuthRouter from '@/hooks/use-auth-router';
-import { toast } from '@/hooks/use-toast';
+import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { PasswordInput } from '@/components/password-input';
+import useAuthRouter from '@/hooks/use-auth-router';
+import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { UserCheck2 } from 'lucide-react';
+import { HTMLAttributes, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useSignUp } from '../context/signup-context';
 
 
@@ -40,6 +40,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckDpcnUsername, setIsCheckDpcnUsername] = useState(false)
   const { setCurrentMbr, signUpMbr } = useSignUp()
+  // @ts-ignore
   const { goToHome, goToLogin } = useAuthRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
