@@ -40,7 +40,9 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
   })
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    if (!(data.items && data.items.length != 0)) {
+    // if (!(data.items && data.items.length > 0)) {
+    if (!(data.items && data.items.length > 0) && 
+        (faithCheckList.filter((check)=>check.fthChckRslt == null).length > 0)) {
       toast({
         title: '안내',
         description: '1개 항목 이상 선택해주세요.',
@@ -189,7 +191,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
             <Button type='reset' 
               disabled={strCurrentDate != format(date, 'yyyyMMdd')}
               variant="outline" 
-              className="col-span-1">취소</Button>
+              className="col-span-1">복원</Button>
             <Button type='submit' 
               disabled={strCurrentDate != format(date, 'yyyyMMdd')}
               className="col-span-1">등록</Button>
