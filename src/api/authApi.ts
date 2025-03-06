@@ -1,6 +1,6 @@
 import { SearchMbr, SignUpMember } from "@/features/auth/sign-up/context/signup-context"
 import { AuthParam } from "@/stores/authStore"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 
 const API_SERVER_HOST = import.meta.env.VITE_API_SERVER_HOST
 
@@ -30,9 +30,9 @@ export interface RespIdentify {
 }
 
 
-export const postSearchMember = async(searchWord: string) : Promise<RespDataList<SearchMbr>> => {
+export const postSearchMember = async(searchWord: string) => {
 	if (!searchWord && searchWord.length < 2) {
-		return {} as Promise<RespDataList<SearchMbr>>
+		return {} as Promise<AxiosResponse>
 	}
 
 	const header = {
@@ -44,28 +44,24 @@ export const postSearchMember = async(searchWord: string) : Promise<RespDataList
 	params.append('searchWord', searchWord)
 
 
-	const res = await axios.post<RespDataList<SearchMbr>>(`${host}/search-member`, params, header)
-
-	return res.data
+	return axios.post<RespDataList<SearchMbr>>(`${host}/search-member`, params, header)
 }
 
-export const postValidateMember = async(member: ReqValidateMember) : Promise<RespData<boolean>> => {
+export const postValidateMember = async(member: ReqValidateMember) => {
 	if (!member)  {
-		return {} as Promise<RespData<boolean>>
+		return {} as Promise<AxiosResponse>
 	}
 	
 	const header = {
 		headers: {'Content-Type': 'application/json'}
 	}
 
-	const res = await axios.post<RespData<boolean>>(`${host}/validate-member`, member, header)
-
-	return res.data
+	return axios.post<RespData<boolean>>(`${host}/validate-member`, member, header)
 }
 
-export const postCheckDpcnUsername = async(username: string) : Promise<RespData<boolean>> => {
+export const postCheckDpcnUsername = async(username: string) => {
 	if (!username)  {
-		return {} as Promise<RespData<boolean>>
+		return {} as Promise<AxiosResponse>
 	}
 	
 	const header = {
@@ -76,21 +72,16 @@ export const postCheckDpcnUsername = async(username: string) : Promise<RespData<
 	
 	params.append('username', username)
 
-	const res = await axios.post<RespData<boolean>>(`${host}/check-dpcn-username`, params, header)
-
-	return res.data;
+	return axios.post<RespData<boolean>>(`${host}/check-dpcn-username`, params, header)
 }
 
-export const putSignUp = async(member: SignUpMember) : Promise<RespData<boolean>> => {
+export const putSignUp = async(member: SignUpMember) => {
 
 	const header = {
 		headers: {'Content-Type': 'application/json'}
 	}
 
-	const res = await axios.put<RespData<boolean>>(`${host}/sign-up`, member, header)
-
-	return res.data
-
+	return axios.put<RespData<boolean>>(`${host}/sign-up`, member, header)
 }
 
 export const postLogin = async(param: AuthParam) => {
@@ -102,5 +93,4 @@ export const postLogin = async(param: AuthParam) => {
 	form.append("password", param.password)
 
 	return axios.post(`${host}/login`, form, header)
-
 }

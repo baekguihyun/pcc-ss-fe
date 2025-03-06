@@ -17,7 +17,6 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
 import { Route as authSignUpImport } from './routes/(auth)/sign-up'
 import { Route as authSignInImport } from './routes/(auth)/sign-in'
-import { Route as auth500Import } from './routes/(auth)/500'
 
 // Create Virtual Routes
 
@@ -105,12 +104,6 @@ const authSignInRoute = authSignInImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const auth500Route = auth500Import.update({
-  id: '/(auth)/500',
-  path: '/500',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -120,13 +113,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthenticatedRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/500': {
-      id: '/(auth)/500'
-      path: '/500'
-      fullPath: '/500'
-      preLoaderRoute: typeof auth500Import
       parentRoute: typeof rootRoute
     }
     '/(auth)/sign-in': {
@@ -210,25 +196,25 @@ const AuthenticatedRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteRouteWithChildren
-  '/500': typeof errors500LazyRoute
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
   '/forgot-password': typeof authForgotPasswordLazyRoute
   '/401': typeof errors401LazyRoute
   '/403': typeof errors403LazyRoute
   '/404': typeof errors404LazyRoute
+  '/500': typeof errors500LazyRoute
   '/503': typeof errors503LazyRoute
   '/': typeof AuthenticatedIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/500': typeof errors500LazyRoute
   '/sign-in': typeof authSignInRoute
   '/sign-up': typeof authSignUpRoute
   '/forgot-password': typeof authForgotPasswordLazyRoute
   '/401': typeof errors401LazyRoute
   '/403': typeof errors403LazyRoute
   '/404': typeof errors404LazyRoute
+  '/500': typeof errors500LazyRoute
   '/503': typeof errors503LazyRoute
   '/': typeof AuthenticatedIndexRoute
 }
@@ -236,7 +222,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/(auth)/500': typeof auth500Route
   '/(auth)/sign-in': typeof authSignInRoute
   '/(auth)/sign-up': typeof authSignUpRoute
   '/(auth)/forgot-password': typeof authForgotPasswordLazyRoute
@@ -252,30 +237,29 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
-    | '/500'
     | '/sign-in'
     | '/sign-up'
     | '/forgot-password'
     | '/401'
     | '/403'
     | '/404'
+    | '/500'
     | '/503'
     | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/500'
     | '/sign-in'
     | '/sign-up'
     | '/forgot-password'
     | '/401'
     | '/403'
     | '/404'
+    | '/500'
     | '/503'
     | '/'
   id:
     | '__root__'
     | '/_authenticated'
-    | '/(auth)/500'
     | '/(auth)/sign-in'
     | '/(auth)/sign-up'
     | '/(auth)/forgot-password'
@@ -290,7 +274,6 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  auth500Route: typeof auth500Route
   authSignInRoute: typeof authSignInRoute
   authSignUpRoute: typeof authSignUpRoute
   authForgotPasswordLazyRoute: typeof authForgotPasswordLazyRoute
@@ -303,7 +286,6 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  auth500Route: auth500Route,
   authSignInRoute: authSignInRoute,
   authSignUpRoute: authSignUpRoute,
   authForgotPasswordLazyRoute: authForgotPasswordLazyRoute,
@@ -325,7 +307,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_authenticated",
-        "/(auth)/500",
         "/(auth)/sign-in",
         "/(auth)/sign-up",
         "/(auth)/forgot-password",
@@ -341,9 +322,6 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/"
       ]
-    },
-    "/(auth)/500": {
-      "filePath": "(auth)/500.tsx"
     },
     "/(auth)/sign-in": {
       "filePath": "(auth)/sign-in.tsx"

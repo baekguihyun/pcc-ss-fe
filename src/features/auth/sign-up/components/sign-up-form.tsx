@@ -12,6 +12,9 @@ import { HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useSignUp } from '../context/signup-context';
+import { AxiosError, AxiosResponse } from 'axios';
+import { errorToast } from '@/api/commons';
+import { useNavigate } from '@tanstack/react-router';
 
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>
@@ -37,6 +40,8 @@ const formSchema = z
   })
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckDpcnUsername, setIsCheckDpcnUsername] = useState(false)
   const { setCurrentMbr, signUpMbr } = useSignUp()
@@ -73,39 +78,38 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
     signUpMbr.username = data.username
     signUpMbr.pswd = data.pswd
-    
-    try {
-      const respData = await putSignUp(signUpMbr)
-
-      if (respData.result) {
-        toast({
-          title: '안내',
-          description: '가입이 완료되었습니다.',
-          variant: 'success',
-          duration: 1000
-        })
+          
+    putSignUp(signUpMbr)
+      .then((response: AxiosResponse) => {
+        const respData = response.data
         
-        // 로그인 페이지로 이동하기
-        setTimeout(() => {
-          goToLogin();
-        }, 2000)
-      }
-      else {
-        toast({
-          title: '안내',
-          description: '가입에 실패했습니다.',
-          variant: 'destructive'
-        })
-        
+        if (respData.result) {
+          toast({
+            title: '안내',
+            description: '가입이 완료되었습니다.',
+            variant: 'success',
+            duration: 1000
+          })
+          
+          // 로그인 페이지로 이동하기
+          setTimeout(() => {
+            goToLogin();
+          }, 2000)
+        }
+        else {
+          toast({
+            title: '안내',
+            description: '가입에 실패했습니다.',
+            variant: 'destructive'
+          })
+        }     
+      })
+      .catch((error: AxiosError) => {
+        errorToast(error, navigate)
+      })
+      .finally(() => {
         setIsLoading(false)
-      }     
-
-    }
-    catch (err) {
-      alert(err)
-
-      setIsLoading(false)
-    }
+      })  
   }
 
   const onClickValidateID = async (username: string) => {
@@ -119,32 +123,34 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       })
     }
 
-    try {
-      const respData = await postCheckDpcnUsername(username)
-  
-      if (respData.result) {
-        toast({
-          title: '안내',
-          description: '중복된 아이디가 있습니다. 다른 아이디를 입력해주세요.',
-          variant: 'destructive'
-        })
-      }
-      else {
-        toast({
-          title: '안내',
-          description: '확인되었습니다.',
-          variant: 'success'
-        })
+    
+    postCheckDpcnUsername(username)
+      .then((response: AxiosResponse) => {
+        const respData = response.data
 
-        setIsCheckDpcnUsername(true);
-      }
-    }
-    catch (err) {
-      alert(err)
-    }
-    finally {
-      setIsLoading(false)
-    }
+        if (respData.result) {
+          toast({
+            title: '안내',
+            description: '중복된 아이디가 있습니다. 다른 아이디를 입력해주세요.',
+            variant: 'destructive'
+          })
+        }
+        else {
+          toast({
+            title: '안내',
+            description: '확인되었습니다.',
+            variant: 'success'
+          })
+  
+          setIsCheckDpcnUsername(true);
+        }
+      })
+      .catch((error: AxiosError) => {
+        errorToast(error, navigate)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
 
   }
 

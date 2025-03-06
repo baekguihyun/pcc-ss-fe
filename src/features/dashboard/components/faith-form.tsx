@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckedState } from "@radix-ui/react-checkbox"
+import { useNavigate } from "@tanstack/react-router"
 import { format, getYear } from "date-fns"
 import { HTMLAttributes, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -22,6 +23,8 @@ const formSchema = z.object({
 });
 
 export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  const navigate = useNavigate();
+  
   const currentDate = new Date()
 
   const strCurrentDate = format(currentDate, 'yyyyMMdd') 
@@ -59,7 +62,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
     })
     // @ts-ignore
     .catch((error) => {
-      errorToast()
+      errorToast(error, navigate)
     })
 
   }
@@ -89,7 +92,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
     })
     // @ts-ignore
     .catch((error) => {
-      errorToast()
+      errorToast(error, navigate)
     })
 
   }, [date])

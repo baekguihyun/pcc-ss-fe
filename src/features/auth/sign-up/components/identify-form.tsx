@@ -17,6 +17,9 @@ import { Input } from '@/components/ui/input'
 import { SearchMbr, useSignUp } from '../context/signup-context'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { AxiosResponse } from 'axios'
+import { errorToast } from '@/api/commons'
+import { useNavigate } from '@tanstack/react-router'
 
 const formSchema = z.object({
   searchWord: z.string().min(2, { message: '최소 2글자 입력해주세요.' }),
@@ -26,6 +29,8 @@ export function IdentifyForm({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
+  const navigate = useNavigate();
+  
   const [isLoading, setLoading] = useState(false)
   const [listSearchMbr, setListSearchMbr] = useState<SearchMbr[] | null>(null)
 
@@ -39,17 +44,20 @@ export function IdentifyForm({
   // @ts-ignore
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true)
-    try {
-      // const respData = await postSearchMember(_searchFlnm)
-      const respData = await postSearchMember(data.searchWord)
+    
+    postSearchMember(data.searchWord)
+      .then((response: AxiosResponse) => {
+        const respData = response.data
 
-      setListSearchMbr(respData.result)
-    } catch (err) {
-      // setError("데이터를 불러오는 중 오류가 발생했습니다.");
-      alert(err)
-    } finally {
-      setLoading(false)
-    }
+        setListSearchMbr(respData.result)
+      })
+      .catch((error) => {
+        // setError("데이터를 불러오는 중 오류가 발생했습니다.");
+        errorToast(error, navigate)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (
@@ -117,7 +125,9 @@ const SearchMbrItem = React.memo(
     const { setCurrentMbr } = useSignUp()
 
     const onSelectBtnClick = useCallback(() => {
-      console.log(searchMbr)
+      if (import.meta.env.MODE === 'development') {
+        console.log(searchMbr)
+      }
 
       setCurrentMbr(searchMbr)
     }, [searchMbr])

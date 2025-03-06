@@ -2,20 +2,24 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import { defineConfig } from 'vite'
-import fs from 'fs'
 
 // https://vite.dev/config/
 export default defineConfig(({command, isPreview}) => {
-  let base = '/';
+  let base = '/'
+  let allowedHosts : boolean | string[] = true
 
   if (command === 'build' || isPreview) {  
-    base = 'pcc-ss-fe'
+    base = '/pcc-ss-fe/'
 
-    console.log('Build base:', base);
+    console.log('Build base:', base)
+
+    allowedHosts = ['baekguihyun.duckdns.org']
   }
   else if (command === 'serve') {
     console.log('Dev base:', base);
   }
+  
+  console.log(`Allowed Hosts: ${allowedHosts}`)
 
   return {
     plugins: [react(), TanStackRouterVite()],
@@ -32,16 +36,12 @@ export default defineConfig(({command, isPreview}) => {
     server: {
       port:7000,
       host: true,
-      allowedHosts: true,
-      https: {
-        key: fs.readFileSync('D:/Programming/PCC-Workspace/server.key'), // 개인 키 경로
-        cert: fs.readFileSync('D:/Programming/PCC-Workspace/server.cert'), // 인증서 경로
-      },
+      allowedHosts: allowedHosts
     },
     preview: {
       port: 7000,
       host: true,
-      allowedHosts: true
+      allowedHosts: allowedHosts
     }
   }
 })

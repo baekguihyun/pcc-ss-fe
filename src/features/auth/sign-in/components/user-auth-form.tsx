@@ -1,3 +1,4 @@
+import { postLogin } from '@/api/authApi'
 import { PasswordInput } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,11 +11,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import useAuthRouter from '@/hooks/use-auth-router'
+import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
-import { HTMLAttributes } from 'react'
+import { Link, useNavigate } from '@tanstack/react-router'
+import { AxiosError, AxiosResponse } from 'axios'
+import { HTMLAttributes, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -32,6 +35,9 @@ const formSchema = z.object({
 })
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const navigate = useNavigate();
+  const [isLoading, setLoading] = useState(false)
+
   const authStore = useAuthStore()
   const {goToHome} = useAuthRouter()
 
@@ -44,10 +50,71 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   })
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    // eslint-disable-next-line no-console
-    authStore.auth.login({
+    setLoading(true)
+
+    postLogin({
       username: data.username, password: data.password
-    }, goToHome)
+    })
+    .then((response: AxiosResponse) => {
+      const respData = response.data
+
+      const code = respData.code
+      
+      if (code == '0') {
+        if (import.meta.env.MODE === 'development') {
+          console.log(respData)
+        }
+
+        const result = respData.result;
+
+        authStore.auth.login(result)
+
+        toast({
+          title: '안내',
+          description: '로그인 되었습니다.',
+          variant: 'success',
+          duration: 1000
+        })
+
+        setTimeout(() => {
+          goToHome()
+        }, 1000)
+
+      }
+      else if (code == '7') {
+        toast({
+          title: '안내',
+          description: '아이디 또는 비밀번호가 일치하지 않습니다.',
+          variant: 'destructive'
+        })
+      }
+      else {
+        toast({
+          title: '안내',
+          description: '알 수 없는 에러가 발생했습니다.',
+          variant: 'destructive'
+        })
+      }
+    })
+    .catch((error: AxiosError) => {
+      console.log(error)
+      
+      if (error.code == "ERR_NETWORK") {
+        navigate({to: '/503'})
+
+        return;
+      }
+
+      toast({
+        title: '안내',
+        description: '서버 에러가 발생했습니다.',
+        variant: 'destructive'
+      })
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+    
   }
 
   return (
@@ -89,7 +156,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' disabled={authStore.loading}>
+            <Button className='mt-2' disabled={isLoading}>
               로그인
             </Button>
 

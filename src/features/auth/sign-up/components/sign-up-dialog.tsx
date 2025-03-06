@@ -20,6 +20,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { SearchMbr, SignUpMember, useSignUp } from '../context/signup-context'
+import { AxiosError, AxiosResponse } from 'axios'
+import { errorToast } from '@/api/commons'
+import { useNavigate } from '@tanstack/react-router'
 
 export function SignUpDialogs() {
   const { currentMbr, setCurrentMbr, setSignUpMbr } = useSignUp()
@@ -53,6 +56,8 @@ export function IdentifyMbrDialog({
   setCurrentMbr,
   setSignUpMbr
 }: Props) {
+  const navigate = useNavigate();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -84,32 +89,31 @@ export function IdentifyMbrDialog({
       brdt: format(data.brdt, "yyyyMMdd")
     } 
 
-    try {
-      const respData = await postValidateMember(reqData)
-
-      if (respData.result) {
-        setCurrentMbr(null)
-        setSignUpMbr({
-          mbrId: currentMbr.mbrId,
-          username: '',
-          pswd: ''
-        })
-      }
-      else {
-        toast({
-          title: '안내',
-          description: '생년월일이 일치하지 않습니다. 다시 한번 입력해주세요.',
-          variant: 'destructive'
-        })
-      }     
-    }
-    catch (err) {
-      alert(err)
-    }
-    finally {
-      setLoading(false)
-    }
-
+    postValidateMember(reqData)
+      .then((response: AxiosResponse) => {
+        const respData = response.data
+        if (respData.result) {
+          setCurrentMbr(null)
+          setSignUpMbr({
+            mbrId: currentMbr.mbrId,
+            username: '',
+            pswd: ''
+          })
+        }
+        else {
+          toast({
+            title: '안내',
+            description: '생년월일이 일치하지 않습니다. 다시 한번 입력해주세요.',
+            variant: 'destructive'
+          })
+        }     
+      })
+      .catch((error: AxiosError) => {
+        errorToast(error, navigate)
+      }) 
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   return (
