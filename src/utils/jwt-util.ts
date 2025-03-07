@@ -34,10 +34,13 @@ const beforeReq = (config: InternalAxiosRequestConfig) => {
 
   if (!memberInfo) {
     console.log('Member NOT FOUND')
+    
     return Promise.reject({
       response: {
         data: {
-          error: 'REQUIRE_LOGIN',
+          code: '8',
+          message: '권한 없음',
+          messageEng: 'UNAUTHORIZED'
         },
       },
     })

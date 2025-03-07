@@ -1,4 +1,5 @@
 import { postLogin } from '@/api/authApi'
+import { useErrorHandler } from '@/api/commons'
 import { PasswordInput } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,7 +16,7 @@ import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { AxiosError, AxiosResponse } from 'axios'
 import { HTMLAttributes, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -35,7 +36,7 @@ const formSchema = z.object({
 })
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const navigate = useNavigate();
+  const handleError = useErrorHandler()
   const [isLoading, setLoading] = useState(false)
 
   const authStore = useAuthStore()
@@ -97,19 +98,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       }
     })
     .catch((error: AxiosError) => {
-      console.log(error)
-      
-      if (error.code == "ERR_NETWORK") {
-        navigate({to: '/503'})
-
-        return;
-      }
-
-      toast({
-        title: '안내',
-        description: '서버 에러가 발생했습니다.',
-        variant: 'destructive'
-      })
+      handleError(error)
     })
     .finally(() => {
       setLoading(false)

@@ -1,4 +1,4 @@
-import { errorToast } from "@/api/commons"
+import { useErrorHandler } from "@/api/commons"
 import { FaithCheck, getList, putList } from "@/api/faithCheckApi"
 import DatePickerFormItem from "@/components/date-picker-form-item"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,6 @@ import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckedState } from "@radix-ui/react-checkbox"
-import { useNavigate } from "@tanstack/react-router"
 import { format, getYear } from "date-fns"
 import { HTMLAttributes, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -23,8 +22,8 @@ const formSchema = z.object({
 });
 
 export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  const navigate = useNavigate();
-  
+  const handleError = useErrorHandler()
+
   const currentDate = new Date()
 
   const strCurrentDate = format(currentDate, 'yyyyMMdd') 
@@ -64,7 +63,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
     })
     // @ts-ignore
     .catch((error) => {
-      errorToast(error, navigate)
+      handleError(error)
     })
 
   }
@@ -94,7 +93,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
     })
     // @ts-ignore
     .catch((error) => {
-      errorToast(error, navigate)
+      handleError(error)
     })
 
   }, [date])

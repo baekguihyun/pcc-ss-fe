@@ -1,10 +1,5 @@
-import React, { HTMLAttributes, useCallback, useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { UserRoundSearch } from 'lucide-react'
 import { postSearchMember } from '@/api/authApi'
-import { cn } from '@/lib/utils'
+import { useErrorHandler } from '@/api/commons'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -14,12 +9,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { SearchMbr, useSignUp } from '../context/signup-context'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosResponse } from 'axios'
-import { errorToast } from '@/api/commons'
-import { useNavigate } from '@tanstack/react-router'
+import { UserRoundSearch } from 'lucide-react'
+import React, { HTMLAttributes, useCallback, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { SearchMbr, useSignUp } from '../context/signup-context'
 
 const formSchema = z.object({
   searchWord: z.string().min(2, { message: '최소 2글자 입력해주세요.' }),
@@ -29,7 +28,7 @@ export function IdentifyForm({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
-  const navigate = useNavigate();
+  const handleError = useErrorHandler()
   
   const [isLoading, setLoading] = useState(false)
   const [listSearchMbr, setListSearchMbr] = useState<SearchMbr[] | null>(null)
@@ -53,7 +52,7 @@ export function IdentifyForm({
       })
       .catch((error) => {
         // setError("데이터를 불러오는 중 오류가 발생했습니다.");
-        errorToast(error, navigate)
+        handleError(error)
       })
       .finally(() => {
         setLoading(false)

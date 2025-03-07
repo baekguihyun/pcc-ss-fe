@@ -1,4 +1,5 @@
 import { postCheckDpcnUsername, putSignUp } from '@/api/authApi';
+import { useErrorHandler } from '@/api/commons';
 import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -7,14 +8,12 @@ import useAuthRouter from '@/hooks/use-auth-router';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AxiosError, AxiosResponse } from 'axios';
 import { UserCheck2 } from 'lucide-react';
 import { HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useSignUp } from '../context/signup-context';
-import { AxiosError, AxiosResponse } from 'axios';
-import { errorToast } from '@/api/commons';
-import { useNavigate } from '@tanstack/react-router';
 
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>
@@ -40,7 +39,7 @@ const formSchema = z
   })
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
-  const navigate = useNavigate();
+  const handleError = useErrorHandler()
 
   const [isLoading, setIsLoading] = useState(false)
   const [isCheckDpcnUsername, setIsCheckDpcnUsername] = useState(false)
@@ -105,7 +104,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         }     
       })
       .catch((error: AxiosError) => {
-        errorToast(error, navigate)
+        handleError(error)
       })
       .finally(() => {
         setIsLoading(false)
@@ -146,7 +145,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         }
       })
       .catch((error: AxiosError) => {
-        errorToast(error, navigate)
+        handleError(error)
       })
       .finally(() => {
         setIsLoading(false)

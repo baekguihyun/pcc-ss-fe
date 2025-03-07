@@ -1,4 +1,5 @@
 import { postValidateMember } from '@/api/authApi'
+import { useErrorHandler } from '@/api/commons'
 import DatePickerFormItem from '@/components/date-picker-form-item'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,14 +16,12 @@ import {
 } from '@/components/ui/form'
 import { toast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AxiosError, AxiosResponse } from 'axios'
 import { format, getYear } from 'date-fns'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { SearchMbr, SignUpMember, useSignUp } from '../context/signup-context'
-import { AxiosError, AxiosResponse } from 'axios'
-import { errorToast } from '@/api/commons'
-import { useNavigate } from '@tanstack/react-router'
 
 export function SignUpDialogs() {
   const { currentMbr, setCurrentMbr, setSignUpMbr } = useSignUp()
@@ -56,7 +55,7 @@ export function IdentifyMbrDialog({
   setCurrentMbr,
   setSignUpMbr
 }: Props) {
-  const navigate = useNavigate();
+  const handleError = useErrorHandler()
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -109,7 +108,7 @@ export function IdentifyMbrDialog({
         }     
       })
       .catch((error: AxiosError) => {
-        errorToast(error, navigate)
+        handleError(error)
       }) 
       .finally(() => {
         setLoading(false)
