@@ -8,6 +8,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { CalendarIcon } from 'lucide-react';
 import { ControllerRenderProps } from 'react-hook-form';
+import { cn } from '@/lib/utils';
 
 const monthKorNames = [
   '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'
@@ -20,9 +21,12 @@ interface DatePickerFormItemProps {
   startYear?: number
   endYear?: number
   endDate?: Date
+  className?: string
 }
 
-const DatePickerFormItem = ({ field, label, initDate, startYear, endYear, endDate }: DatePickerFormItemProps) => {
+const DatePickerFormItem = ({ field, label, 
+    initDate, startYear, endYear, endDate,
+    className }: DatePickerFormItemProps) => {
   const today = new Date()
   initDate = initDate || new Date();
   startYear = startYear || getYear(new Date()) - 100
@@ -46,7 +50,7 @@ const DatePickerFormItem = ({ field, label, initDate, startYear, endYear, endDat
   }
 
   return (
-    <FormItem className='flex flex-col'>
+    <FormItem className={cn('flex flex-col', className)}>
       {label ? 
         <FormLabel>{label}</FormLabel>
         :

@@ -8,7 +8,8 @@ import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckedState } from "@radix-ui/react-checkbox"
-import { format, getYear } from "date-fns"
+import { addDays, format, getYear, subDays } from "date-fns"
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import { HTMLAttributes, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -25,9 +26,11 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
   const handleError = useErrorHandler()
 
   const currentDate = new Date()
-
-  const strCurrentDate = format(currentDate, 'yyyyMMdd') 
   
+  const strCurDate = format(currentDate, 'yyyyMMdd')
+  
+  const [isToday, setIsToday] = useState(false) 
+  const [isLoading, setIsLoading] = useState(false)
   const [faithCheckList, setFaithCheckList] = useState<FaithCheck[]>([])
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,6 +54,8 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
       return;
     }
 
+    setIsLoading(true)
+
     putList(currentDate, faithCheckList)
     // @ts-ignore
     .then((response) => {
@@ -64,6 +69,9 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
     // @ts-ignore
     .catch((error) => {
       handleError(error)
+    })
+    .finally(() => {
+      setIsLoading(false)
     })
 
   }
@@ -81,6 +89,13 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
   }
   
   useEffect(() => {
+
+    if (strCurDate == format(date, 'yyyyMMdd')) {
+      setIsToday(true)
+    }
+    else {
+      setIsToday(false)
+    }
 
     getList(date)
     .then((response) => {
@@ -106,12 +121,29 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
             control={form.control}
             name='date'
             render={({ field }) => 
-              <DatePickerFormItem field={field} 
-                label="날짜"
-                startYear={getYear(currentDate)} 
-                endYear={getYear(currentDate)}
-                endDate={currentDate}/>}
-              />
+              <div>
+                <FormLabel>날짜</FormLabel>
+                <div className="flex items-end gap-1 mt-1">
+                  <Button type="button" variant="outline" onClick={() => {
+                    form.setValue('date', subDays(date, 1))
+                  }}>
+                    <ChevronLeft />
+                  </Button>
+                  <DatePickerFormItem field={field} 
+                    startYear={getYear(currentDate)} 
+                    endYear={getYear(currentDate)}
+                    endDate={currentDate}
+                    className='flex-1'/>
+                  <Button type="button" variant="outline" disabled={isToday} 
+                    onClick={() => {
+                      form.setValue('date', addDays(date, 1))
+                    }} >
+                    <ChevronRight />
+                  </Button>
+                </div>
+              </div>
+            }
+          />
           <FormField 
             control={form.control}
             name='items'
@@ -124,7 +156,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
                     오늘이 지나면 등록할 수 없습니다.
                   </FormDescription>
                 </div>
-                <div className="grid grid-cols-2">
+                <div className="grid grid-cols-2 gap-2">
                   {faithCheckList.map((fthChck) => (
                     <Controller
                       key={fthChck.fthActvCd}
@@ -145,7 +177,7 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
                                 )
                             handleCheckedChange(checked, fthChck.fthActvCd)
                           }}
-                          disabled={strCurrentDate != format(date, 'yyyyMMdd')}
+                          disabled={!isToday}
                           fthChck={fthChck}
                         />
                       )}
@@ -157,12 +189,15 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
           />
           <div className="grid grid-cols-2 gap-1 w-full">
             <Button type='reset' 
-              disabled={strCurrentDate != format(date, 'yyyyMMdd')}
+              disabled={!isToday}
               variant="outline" 
               className="col-span-1">복원</Button>
             <Button type='submit' 
-              disabled={strCurrentDate != format(date, 'yyyyMMdd')}
-              className="col-span-1">등록</Button>
+              disabled={isLoading || !isToday}
+              className="col-span-1">
+              {isLoading && <Loader2 className="animate-spin" />}
+              등록
+            </Button>
           </div>
         </div>
       </form>

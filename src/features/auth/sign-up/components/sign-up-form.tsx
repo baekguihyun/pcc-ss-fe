@@ -9,7 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError, AxiosResponse } from 'axios';
-import { UserCheck2 } from 'lucide-react';
+import { Loader2, UserCheck2 } from 'lucide-react';
 import { HTMLAttributes, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -206,6 +206,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               )}
             />
             <Button className='mt-2' disabled={!isCheckDpcnUsername || isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />}
               가입하기
             </Button>
           </div>

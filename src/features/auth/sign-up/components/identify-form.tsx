@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosResponse } from 'axios'
-import { UserRoundSearch } from 'lucide-react'
+import { Loader2, UserRoundSearch } from 'lucide-react'
 import React, { HTMLAttributes, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -73,6 +73,7 @@ export function IdentifyForm({
                     <Input type='text' placeholder='이름' {...field} />
                   </FormControl>
                   <Button type='submit' disabled={isLoading}>
+                    {isLoading && <Loader2 className="animate-spin" />}
                     <UserRoundSearch />
                     찾기
                   </Button>

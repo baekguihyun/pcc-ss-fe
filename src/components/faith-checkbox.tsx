@@ -22,7 +22,7 @@ const FaithCheckbox: React.FC<FaithCheckboxProps> = ({
   fthChck
 }) => {
   return (
-    <div className="space-x-1 space-y-1">
+    <div className="">
       {/* 기본 Checkbox는 숨김 */}
       <Checkbox
         id={id}

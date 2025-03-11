@@ -22,6 +22,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { SearchMbr, SignUpMember, useSignUp } from '../context/signup-context'
+import { Loader2 } from 'lucide-react'
 
 export function SignUpDialogs() {
   const { currentMbr, setCurrentMbr, setSignUpMbr } = useSignUp()
@@ -144,6 +145,7 @@ export function IdentifyMbrDialog({
             닫기
           </Button>
           <Button type='submit' form='task-import-form' disabled={isLoading}>
+            {isLoading && <Loader2 className="animate-spin" />}
             확인
           </Button>
         </DialogFooter>

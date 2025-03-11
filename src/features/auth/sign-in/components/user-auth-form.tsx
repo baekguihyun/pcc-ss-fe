@@ -18,6 +18,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
 import { AxiosError, AxiosResponse } from 'axios'
+import { Loader2 } from 'lucide-react'
 import { HTMLAttributes, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -146,6 +147,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               )}
             />
             <Button className='mt-2' disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />}
               로그인
             </Button>
 
