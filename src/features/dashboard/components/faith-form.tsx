@@ -1,5 +1,6 @@
 import { useErrorHandler } from "@/api/commons"
 import { FaithCheck, getList, putList } from "@/api/faithCheckApi"
+import FaithCheckbox from "@/components/faith-checkbox"
 import DatePickerFormItem from "@/components/date-picker-form-item"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -10,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckedState } from "@radix-ui/react-checkbox"
 import { format, getYear } from "date-fns"
 import { HTMLAttributes, useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 
@@ -124,65 +125,34 @@ export function FaithForm({ className, ...props }: HTMLAttributes<HTMLDivElement
                     오늘이 지나면 등록할 수 없습니다.
                   </FormDescription>
                 </div>
-                {faithCheckList.map((fthChck) => (
-                  <FormField
-                    key={fthChck.fthActvCd}
-                    control={form.control}
-                    name='items'
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={fthChck.fthActvCd}
-                          className='items-start space-x-3 space-y-1 grid grid-cols-12 sm:grid-cols-6'
-                        >
-                          <FormLabel className='font-medium col-span-10 sm:col-span-5'>
-                            {(() => {
-                              // 성경
-                              if (fthChck.fthActvClsfCd == '101') { 
-                                return '📖'
-                              }
-                              // 기도
-                              else if (fthChck.fthActvClsfCd == '102') {
-                                return '🙏'
-                              }
-                              // 찬양
-                              else if (fthChck.fthActvClsfCd == '103') {
-                                return '🎶'
-                              }
-                              else {
-                                return '👉'
-                              }
-                            })()}
-                            {fthChck.fthActvNm}
-                          </FormLabel>
-                          <FormControl>
-                            <div className="flex justify-end col-span-2 sm:col-span-1">
-                              <Checkbox 
-                                checked={fthChck.fthChckRslt > 0}
-                                disabled={strCurrentDate != format(date, 'yyyyMMdd')}
-                                onCheckedChange={(checked) => {
-                                  checked
-                                    ? field.onChange([...field.value, fthChck.fthActvCd])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== fthChck.fthActvCd
-                                        )
-                                      )
-                                  handleCheckedChange(checked, fthChck.fthActvCd)
-                                }}
-                                className={`h-5 w-5 ${
-                                  strCurrentDate != format(date, 'yyyyMMdd')
-                                    ? "opacity-40 border-dashed border-red-300 bg-red-100"
-                                    : "border-blue-500"
-                                }`}
-                              />
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )
-                    }}
-                  />
-                ))}
+                <div className="grid grid-cols-2">
+                  {faithCheckList.map((fthChck) => (
+                    <Controller
+                      key={fthChck.fthActvCd}
+                      name="items"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FaithCheckbox
+                          id={fthChck.fthActvCd}
+                          label={fthChck.fthActvNm}
+                          checked={fthChck.fthChckRslt > 0}
+                          onCheckedChange={(checked) => {
+                            checked
+                              ? field.onChange([...field.value, fthChck.fthActvCd])
+                              : field.onChange(
+                                  field.value?.filter(
+                                    (value) => value !== fthChck.fthActvCd
+                                  )
+                                )
+                            handleCheckedChange(checked, fthChck.fthActvCd)
+                          }}
+                          disabled={strCurrentDate != format(date, 'yyyyMMdd')}
+                          fthChck={fthChck}
+                        />
+                      )}
+                    />
+                  ))}
+                </div>
               </FormItem>
             )}
           />

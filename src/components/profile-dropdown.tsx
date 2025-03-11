@@ -68,7 +68,6 @@ export function ProfileDropdown() {
           goToLogin()
         }}>
           로그아웃
-          {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
