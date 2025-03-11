@@ -42,8 +42,8 @@ export default function Dashboard() {
           <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
         </div>
         <div className='space-y-4'>
-            <div className='grid gap-4 grid-cols-1 lg:grid-cols-4'>
-              <Card className='col-span-1 lg:col-span-2 xl:col-span-1'>
+            <div className='grid gap-4 grid-cols-1 md:grid-cols-4 '>
+              <Card className='col-span-1 md:col-span-2 2xl:col-span-1'>
                 <CardHeader>
                   <CardTitle className='text-xl'>신앙점검</CardTitle>
                 </CardHeader>

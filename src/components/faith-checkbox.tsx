@@ -22,7 +22,7 @@ const FaithCheckbox: React.FC<FaithCheckboxProps> = ({
   fthChck
 }) => {
   return (
-    <div className="space-y-2">
+    <div className="space-x-1 space-y-1">
       {/* 기본 Checkbox는 숨김 */}
       <Checkbox
         id={id}
@@ -34,8 +34,8 @@ const FaithCheckbox: React.FC<FaithCheckboxProps> = ({
       {/* 커스텀 사각형 버튼 스타일 */}
       <Label
         htmlFor={id}
-        className={`flex flex-col items-center justify-center w-[200px] h-[100px] border-2 rounded-lg 
-          cursor-pointer text-lg transition-all duration-300 ease-in-out 
+        className={`flex flex-col items-center justify-center h-[100px] border-2 rounded-lg 
+          cursor-pointer text-sm transition-all duration-300 ease-in-out 
           ${checked 
             ? "bg-blue-400 text-white border-blue-400" : "bg-gray-100 border-gray-300"} 
           ${className}`}
