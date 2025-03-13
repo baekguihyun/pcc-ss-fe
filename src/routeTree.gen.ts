@@ -17,6 +17,9 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
 import { Route as authSignUpImport } from './routes/(auth)/sign-up'
 import { Route as authSignInImport } from './routes/(auth)/sign-in'
+import { Route as authSignUpTeacherImport } from './routes/(auth)/sign-up/teacher'
+import { Route as authSignUpStudentImport } from './routes/(auth)/sign-up/student'
+import { Route as authSignUpParentImport } from './routes/(auth)/sign-up/parent'
 
 // Create Virtual Routes
 
@@ -104,6 +107,24 @@ const authSignInRoute = authSignInImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const authSignUpTeacherRoute = authSignUpTeacherImport.update({
+  id: '/teacher',
+  path: '/teacher',
+  getParentRoute: () => authSignUpRoute,
+} as any)
+
+const authSignUpStudentRoute = authSignUpStudentImport.update({
+  id: '/student',
+  path: '/student',
+  getParentRoute: () => authSignUpRoute,
+} as any)
+
+const authSignUpParentRoute = authSignUpParentImport.update({
+  id: '/parent',
+  path: '/parent',
+  getParentRoute: () => authSignUpRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -178,6 +199,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/(auth)/sign-up/parent': {
+      id: '/(auth)/sign-up/parent'
+      path: '/parent'
+      fullPath: '/sign-up/parent'
+      preLoaderRoute: typeof authSignUpParentImport
+      parentRoute: typeof authSignUpImport
+    }
+    '/(auth)/sign-up/student': {
+      id: '/(auth)/sign-up/student'
+      path: '/student'
+      fullPath: '/sign-up/student'
+      preLoaderRoute: typeof authSignUpStudentImport
+      parentRoute: typeof authSignUpImport
+    }
+    '/(auth)/sign-up/teacher': {
+      id: '/(auth)/sign-up/teacher'
+      path: '/teacher'
+      fullPath: '/sign-up/teacher'
+      preLoaderRoute: typeof authSignUpTeacherImport
+      parentRoute: typeof authSignUpImport
+    }
   }
 }
 
@@ -194,10 +236,26 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface authSignUpRouteChildren {
+  authSignUpParentRoute: typeof authSignUpParentRoute
+  authSignUpStudentRoute: typeof authSignUpStudentRoute
+  authSignUpTeacherRoute: typeof authSignUpTeacherRoute
+}
+
+const authSignUpRouteChildren: authSignUpRouteChildren = {
+  authSignUpParentRoute: authSignUpParentRoute,
+  authSignUpStudentRoute: authSignUpStudentRoute,
+  authSignUpTeacherRoute: authSignUpTeacherRoute,
+}
+
+const authSignUpRouteWithChildren = authSignUpRoute._addFileChildren(
+  authSignUpRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteRouteWithChildren
   '/sign-in': typeof authSignInRoute
-  '/sign-up': typeof authSignUpRoute
+  '/sign-up': typeof authSignUpRouteWithChildren
   '/forgot-password': typeof authForgotPasswordLazyRoute
   '/401': typeof errors401LazyRoute
   '/403': typeof errors403LazyRoute
@@ -205,11 +263,14 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500LazyRoute
   '/503': typeof errors503LazyRoute
   '/': typeof AuthenticatedIndexRoute
+  '/sign-up/parent': typeof authSignUpParentRoute
+  '/sign-up/student': typeof authSignUpStudentRoute
+  '/sign-up/teacher': typeof authSignUpTeacherRoute
 }
 
 export interface FileRoutesByTo {
   '/sign-in': typeof authSignInRoute
-  '/sign-up': typeof authSignUpRoute
+  '/sign-up': typeof authSignUpRouteWithChildren
   '/forgot-password': typeof authForgotPasswordLazyRoute
   '/401': typeof errors401LazyRoute
   '/403': typeof errors403LazyRoute
@@ -217,13 +278,16 @@ export interface FileRoutesByTo {
   '/500': typeof errors500LazyRoute
   '/503': typeof errors503LazyRoute
   '/': typeof AuthenticatedIndexRoute
+  '/sign-up/parent': typeof authSignUpParentRoute
+  '/sign-up/student': typeof authSignUpStudentRoute
+  '/sign-up/teacher': typeof authSignUpTeacherRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/(auth)/sign-in': typeof authSignInRoute
-  '/(auth)/sign-up': typeof authSignUpRoute
+  '/(auth)/sign-up': typeof authSignUpRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordLazyRoute
   '/(errors)/401': typeof errors401LazyRoute
   '/(errors)/403': typeof errors403LazyRoute
@@ -231,6 +295,9 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500LazyRoute
   '/(errors)/503': typeof errors503LazyRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/(auth)/sign-up/parent': typeof authSignUpParentRoute
+  '/(auth)/sign-up/student': typeof authSignUpStudentRoute
+  '/(auth)/sign-up/teacher': typeof authSignUpTeacherRoute
 }
 
 export interface FileRouteTypes {
@@ -246,6 +313,9 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/sign-up/parent'
+    | '/sign-up/student'
+    | '/sign-up/teacher'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sign-in'
@@ -257,6 +327,9 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
+    | '/sign-up/parent'
+    | '/sign-up/student'
+    | '/sign-up/teacher'
   id:
     | '__root__'
     | '/_authenticated'
@@ -269,13 +342,16 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/'
+    | '/(auth)/sign-up/parent'
+    | '/(auth)/sign-up/student'
+    | '/(auth)/sign-up/teacher'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   authSignInRoute: typeof authSignInRoute
-  authSignUpRoute: typeof authSignUpRoute
+  authSignUpRoute: typeof authSignUpRouteWithChildren
   authForgotPasswordLazyRoute: typeof authForgotPasswordLazyRoute
   errors401LazyRoute: typeof errors401LazyRoute
   errors403LazyRoute: typeof errors403LazyRoute
@@ -287,7 +363,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   authSignInRoute: authSignInRoute,
-  authSignUpRoute: authSignUpRoute,
+  authSignUpRoute: authSignUpRouteWithChildren,
   authForgotPasswordLazyRoute: authForgotPasswordLazyRoute,
   errors401LazyRoute: errors401LazyRoute,
   errors403LazyRoute: errors403LazyRoute,
@@ -327,7 +403,12 @@ export const routeTree = rootRoute
       "filePath": "(auth)/sign-in.tsx"
     },
     "/(auth)/sign-up": {
-      "filePath": "(auth)/sign-up.tsx"
+      "filePath": "(auth)/sign-up.tsx",
+      "children": [
+        "/(auth)/sign-up/parent",
+        "/(auth)/sign-up/student",
+        "/(auth)/sign-up/teacher"
+      ]
     },
     "/(auth)/forgot-password": {
       "filePath": "(auth)/forgot-password.lazy.tsx"
@@ -350,6 +431,18 @@ export const routeTree = rootRoute
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
       "parent": "/_authenticated"
+    },
+    "/(auth)/sign-up/parent": {
+      "filePath": "(auth)/sign-up/parent.tsx",
+      "parent": "/(auth)/sign-up"
+    },
+    "/(auth)/sign-up/student": {
+      "filePath": "(auth)/sign-up/student.tsx",
+      "parent": "/(auth)/sign-up"
+    },
+    "/(auth)/sign-up/teacher": {
+      "filePath": "(auth)/sign-up/teacher.tsx",
+      "parent": "/(auth)/sign-up"
     }
   }
 }
